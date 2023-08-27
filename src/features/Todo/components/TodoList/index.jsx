@@ -21,13 +21,6 @@ function TodoList({ todoList, onTodoClick }) {
     }
 
     useEffect(() => {
-        console.log('ComponentDidMount')
-        return () => {
-            console.log('ComponentWillUnmount')
-        }
-    }, [])
-
-    useEffect(() => {
         console.log('ComponentDidUpdate cho điều kiện todoList được cập nhật')
     }, [todoList])
 
@@ -41,7 +34,7 @@ function TodoList({ todoList, onTodoClick }) {
                     'todo-item': true,
                     completed: todo.status === 'completed'})}
                     onClick={() => handleTodoClick(todo, idx)}
-                    >{todo.title}</li>
+                    >{todo.name}</li>
             ))}
         </ul>
     );

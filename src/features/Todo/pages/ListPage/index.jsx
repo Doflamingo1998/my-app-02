@@ -1,38 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useHistory, useRouteMatch } from 'react-router-dom';
-
+import CategoryList from '../../../Category/components/CateList';
 import TodoList from '../../components/TodoList';
 import queryString from 'query-string';
 import TodoForm from '../../components/TodoForm';
+import productApi from '../../../../api/productApi';
 
 ListPage.propTypes = {
 
 };
 
 function ListPage(props) {
-    const initTodoList = [
-        {
-            id: 1,
-            title: 'Eat',
-            status: 'new',
-        },
-        {
-            id: 2,
-            title: 'sleep',
-            status: 'completed',
-        },
-        {
-            id: 3,
-            title: 'code',
-            status: 'new',
-        },
-    ]
+    
 
     const location = useLocation();
     const history = useHistory();
     const match = useRouteMatch();
 
-    const [todoList, setTodoList] = useState(initTodoList);
+    const [todoList, setTodoList] = useState([]);
     const [filteredStatus, setFilteredStatus] = useState(() => {
         const params = queryString.parse(location.search);
 
@@ -43,6 +28,28 @@ function ListPage(props) {
         const params = queryString.parse(location.search);
         setFilteredStatus(params.status || 'all');
     }, [location.search])
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+          const params = {
+            _limit: 10,
+          };
+          const productList = await productApi.getAll(params);
+          console.log(productList);
+
+        //   let i = 0;
+
+        //   for (i = 0; i < productList.length; i++){
+        //     productList[i].title = productList[i].name;
+        //     console.log(productList[i]);
+        //   }
+
+          setTodoList(productList);
+          
+        }
+    
+        fetchProducts();
+      }, []);
 
     const [isDisplay, setIsDisplay] = useState(true);
 
@@ -100,7 +107,10 @@ function ListPage(props) {
         console.log('Form submit: ', values);
         const newTodo = {
             id: todoList.length + 1,
-            title: values.title,
+            name: values.name,
+            category: {
+                name: 'Cái gì cũng được'
+            },
             status: 'new'
         };
 
@@ -110,7 +120,8 @@ function ListPage(props) {
 
     return (
         <div>
-            <h3>What do you do</h3>
+            <h3>Categories</h3>
+            <CategoryList />
             <TodoForm onSubmit={handleTodoFormSubmit} />
 
 
